@@ -1,0 +1,31 @@
+@import 'tailwindcss';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../**/*.blade.php';
+@theme { --font-sans: 'Segoe UI', ui-sans-serif, system-ui, sans-serif; --color-brand-600:#0b817d; --color-brand-700:#096b68; }
+@layer base { body{@apply bg-slate-50 text-slate-700 antialiased;} button,a,input,select,textarea{@apply outline-offset-4;} button{@apply cursor-pointer;} button:disabled{@apply cursor-wait opacity-60;} h1,h2,h3{@apply text-slate-900;} [x-cloak]{display:none!important;} }
+@layer components {
+ .btn{@apply inline-flex items-center justify-center gap-2 rounded-lg bg-brand-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-brand-700 focus:ring-2 focus:ring-teal-400 disabled:opacity-50;}
+ .btn-secondary{@apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-600 transition hover:bg-slate-50;}
+ .btn-danger{@apply inline-flex items-center justify-center rounded-lg border border-red-200 bg-red-50 px-4 py-2 text-sm font-semibold text-red-700 hover:bg-red-100;}
+ .field{@apply block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-teal-500 focus:ring-2 focus:ring-teal-100;}
+ .label{@apply mb-1.5 block text-xs font-semibold text-slate-600;}
+ .card{@apply rounded-xl border border-slate-200/80 bg-white shadow-sm shadow-slate-100/70;}
+ .card-header{@apply flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4;}
+ .page-title{@apply text-2xl font-bold tracking-tight text-slate-900;}
+ .subtitle{@apply mt-1 text-sm leading-relaxed text-slate-500;}
+ .table-wrap{@apply overflow-x-auto;}
+ .data-table{@apply w-full whitespace-nowrap text-left text-sm;}
+ .data-table thead{@apply bg-slate-50 text-[11px] font-semibold uppercase tracking-wider text-slate-500;}
+ .data-table th{@apply px-5 py-3.5 font-semibold;}
+ .data-table td{@apply border-t border-slate-100 px-5 py-4;}
+ .data-table tbody tr{@apply hover:bg-slate-50/70;}
+ .link{@apply font-semibold text-brand-600 hover:text-brand-700 hover:underline;}
+ .nav-link{@apply flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-slate-400 transition hover:bg-white/5 hover:text-white;}
+ .nav-link.active{@apply bg-teal-400/10 text-teal-300;box-shadow:inset 3px 0 #2dd4bf;}
+ .eyebrow{@apply text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500;}
+ .modal-shade{@apply fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-slate-950/50 p-4 pt-12 backdrop-blur-sm;}
+ .modal-card{@apply w-full max-w-2xl rounded-2xl bg-white shadow-2xl;}
+ .form-grid{@apply grid grid-cols-1 gap-4 md:grid-cols-2;}
+ .notice{@apply rounded-lg border border-teal-200 bg-teal-50 px-4 py-3 text-sm text-teal-800;}
+}

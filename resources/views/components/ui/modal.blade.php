@@ -1,0 +1,2 @@
+@props(['title','close'=>"\$set('showForm',false)"])
+<div class="modal-shade" x-data x-on:keydown.escape.window="$wire.{{ $close }}" role="dialog" aria-modal="true" aria-label="{{ $title }}"><section class="modal-card"><div class="card-header"><h2 class="text-lg font-semibold">{{ $title }}</h2><button type="button" wire:click="{{ $close }}" class="btn-secondary" aria-label="Tutup">✕</button></div><div class="p-6">{{ $slot }}</div></section></div>

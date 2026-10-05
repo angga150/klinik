@@ -1,0 +1,23 @@
+<div><div class="mb-6 flex flex-wrap justify-between gap-3"><div><h1 class="page-title">Persediaan obat</h1><p class="subtitle">Batch, kedaluwarsa, penerimaan, dan ledger mutasi stok.</p></div>
+@can('inventory.receive')<button class="btn" wire:click="receive"><x-ui.icon name="plus"/>Terima obat</button>
+@endcan</div><x-ui.feedback/><div class="card mb-5 flex items-center justify-between p-5"><div><p class="label">Nilai persediaan layak pakai</p><p class="text-2xl font-bold text-slate-900">{{ \App\Support\Money::format($value) }}</p></div><x-ui.icon name="box" class="h-10 w-10 text-teal-300"/></div>
+<section class="card"><div class="card-header"><input class="field max-w-sm" wire:model.live.debounce.350ms="search" placeholder="Cari nama obat atau SKU…" aria-label="Cari persediaan"><select class="field max-w-xs" wire:model.live="filter" aria-label="Filter kedaluwarsa"><option value="">Semua batch</option><option value="expired">Sudah kedaluwarsa</option><option value="30">Kedaluwarsa ≤ 30 hari</option><option value="60">Kedaluwarsa ≤ 60 hari</option><option value="90">Kedaluwarsa ≤ 90 hari</option><option value="quarantine">Karantina</option></select></div><div class="table-wrap"><table class="data-table"><thead><tr><th>Obat / SKU</th><th>Batch</th><th>Kedaluwarsa</th><th>Saldo</th><th>Kondisi</th><th>Aksi</th></tr></thead><tbody>
+@forelse($rows as $batch)<tr><td><p class="font-semibold text-slate-800">{{ $batch->medicine->name }}</p><p class="mt-1 text-xs text-slate-400">{{ $batch->medicine->sku }}</p></td><td class="font-mono text-xs">{{ $batch->batch_number }}</td><td class="{{ $batch->expires_on->lte(today())?'text-red-600':'' }}">{{ $batch->expires_on->format('d M Y') }}</td><td class="font-semibold">{{ $batch->quantity }} <span class="text-xs font-normal text-slate-400">{{ $batch->medicine->unit->name }}</span></td><td><x-ui.badge :status="$batch->condition"/></td><td><div class="flex gap-3 text-xs"><button wire:click="selectBatch({{ $batch->id }},'ledger')" class="link">Kartu stok</button>
+@can('inventory.adjust')<button wire:click="selectBatch({{ $batch->id }},'opname')" class="link">Opname</button><button wire:click="selectBatch({{ $batch->id }},'adjustment')" class="link">Sesuaikan</button><button wire:click="selectBatch({{ $batch->id }},'return')" class="text-red-600">Retur</button>
+@endcan</div></td></tr>
+@empty<tr><td colspan="6"><x-ui.empty/></td></tr>
+@endforelse</tbody></table></div><div class="p-4">{{ $rows->links() }}</div></section>
+@if($mode)<x-ui.modal :title="['receive'=>'Penerimaan obat','ledger'=>'Kartu stok','opname'=>'Stok opname','adjustment'=>'Penyesuaian stok','return'=>'Retur supplier'][$mode]" close="$set('mode','')"><x-ui.feedback/>
+@if($mode==='ledger')<table class="data-table"><thead><tr><th>Waktu / petugas</th><th>Jenis</th><th>Mutasi</th></tr></thead><tbody>
+@foreach($ledger as $m)<tr><td>{{ $m->created_at->format('d/m H:i') }}<p class="text-xs text-slate-400">{{ $m->actor->name }}</p><p class="max-w-xs whitespace-normal text-xs">{{ $m->reason }}</p></td><td>{{ $m->kind }}</td><td class="font-bold {{ $m->quantity>=0?'text-teal-600':'text-red-500' }}">{{ $m->quantity>0?'+':'' }}{{ $m->quantity }}</td></tr>
+@endforeach</tbody></table>{{ $ledger->links() }}
+@else<form wire:submit="save"><div class="form-grid">
+@if($mode==='receive')
+@foreach(['medicine_id'=>['Obat',$medicines],'supplier_id'=>['Supplier',$suppliers]] as $key=>[$label,$options])<label><span class="label">{{ $label }}</span><select class="field" wire:model="form.{{ $key }}"><option value="">Pilih…</option>
+@foreach($options as $o)<option value="{{ $o->id }}">{{ $o->name }}</option>
+@endforeach</select></label>
+@endforeach<x-ui.field label="Nomor batch" model="form.batch_number"/><x-ui.field label="Kedaluwarsa" model="form.expires_on" type="date"/><x-ui.field label="Jumlah diterima" model="form.quantity" type="number"/><x-ui.field label="Harga beli per satuan (Rp)" model="form.purchase_price" type="number" step="0.01"/><x-ui.field label="Catatan penerimaan" model="form.notes"/>
+@else<x-ui.field :label="$mode==='return'?'Jumlah dikembalikan':'Saldo hasil penghitungan'" model="quantity" type="number"/><x-ui.field label="Alasan transaksi (wajib)" model="reason"/>
+@endif</div><p class="mt-4 text-xs text-slate-400">Transaksi tercatat dalam ledger dan audit; saldo tidak boleh negatif.</p><button class="btn mt-5" wire:loading.attr="disabled" wire:confirm="Simpan transaksi stok ini?">Simpan transaksi</button></form>
+@endif</x-ui.modal>
+@endif</div>

@@ -1,0 +1,1 @@
+<div class="px-6 py-12 text-center"><x-ui.icon name="box" class="mx-auto mb-3 h-8 w-8 text-slate-300"/><p class="text-sm font-medium text-slate-500">{{ $slot->isEmpty() ? "Belum ada data untuk ditampilkan." : $slot }}</p></div>
